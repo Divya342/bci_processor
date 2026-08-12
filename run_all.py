@@ -40,7 +40,7 @@ def run_comprehensive_asic_pipeline():
     if not os.path.exists(config_path):
         os.makedirs(os.path.dirname(config_path), exist_ok=True)
         default_cfg = {
-            "file_metadata": {"module_name": "bci_config_pkg", "company": "Top-Tier BCI Microelectronics Design Lab"},
+            "file_metadata": {"module_name": "bci_config_pkg"},
             "hardware_core_geometry": {"WINDOW_SIZE": {"value": 1024}, "STRIDE_SIZE": {"value": 32},
                                        "SPECTRUM_BINS": {"value": 513}},
             "arithmetic_bus_specifications": {"DATA_WIDTH": {"value": 16}, "ENERGY_WIDTH": {"value": 32}},

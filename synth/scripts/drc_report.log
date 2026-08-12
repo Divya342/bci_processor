@@ -1,9 +1,0 @@
-===============================================================================
-=            SIEMENS CALIBRE DESIGN RULE CHECK (DRC) REPORT SIGN-OFF          =
-===============================================================================
-Design Name : bci_top
-Target Process Node : Open-Source SkyWater 130nm CMOS (sky130)
-Verification Status : CLEAN - ZERO MANUFACTURING VIOLATIONS DETECTED
-===============================================================================
-DRC SIGN-OFF: SUCCESS. Geometric layout complies fully with foundry rules.
-===============================================================================
