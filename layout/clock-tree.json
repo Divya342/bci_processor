@@ -1,0 +1,37 @@
+{
+  "file_metadata": {
+    "file_name": "clock_tree.json",
+    "design_target": "Clock Tree Synthesis (CTS) Specification Generation"
+  },
+  "target_net_and_buffer_targets": {
+    "clock_net_name": "clk",
+    "clock_root_port": "clk",
+    "foundry_clock_buffer_cells": [
+      "sky130_fd_sc_hd__clkbuf_2",
+      "sky130_fd_sc_hd__clkbuf_4",
+      "sky130_fd_sc_hd__clkbuf_8"
+    ],
+    "notes": "Select high-drive, low-skew clock buffer standard cells from the SkyWater 130nm standard library collection."
+  },
+  "cts_performance_targets": {
+    "max_allowed_clock_skew_ns": 0.150,
+    "max_allowed_clock_skew_notes": "Max allowable time difference between any two registers on the chip. Set to an aggressive 150 picoseconds to guarantee perfect timing closure.",
+    "max_clock_transition_edge_ns": 1.000,
+    "max_clock_transition_notes": "Maximum electrical rise and fall time for the clock signal edge. Set to 1.0 nanosecond to keep the clock edges crisp and drop dynamic power leakage."
+  },
+  "chip_execution_layer": {
+    "compile_clock_tree_parameters": {
+      "clock_net": "clk",
+      "buffer_cells_applied": "foundry_clock_buffer_cells",
+      "clock_gating_enabled": true
+    },
+    "description": "Executing structural clock routing optimization. Injecting balanced tree buffer cells dynamically across layout."
+  },
+  "post_cts_timing_and_legalization": {
+    "optimize_legalize_post_cts": {
+      "hold_fixing_effort": "high",
+      "auto_insert_delay_buffers": true
+    },
+    "notes": "Once the clock tree is built, hold-time violations can appear. This instructs the router to automatically insert delay buffers on fast data tracks."
+  }
+}

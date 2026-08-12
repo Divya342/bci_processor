@@ -1,0 +1,101 @@
+{
+  "file_metadata": {
+    "file_name": "power_domains.json",
+    "description": "Multi-voltage domain rule matrix and power-gating isolation/level-shifter constraints."
+  },
+  "power_domains": {
+    "PD_TOP": {
+      "type": "top_level_global_context",
+      "elements": null,
+      "description": "Top-level global power context envelope"
+    },
+    "PD_ALWAYS_ON": {
+      "type": "control_island_0.8V",
+      "elements": [
+        "u_window_buffer",
+        "u_power_arbitrator"
+      ],
+      "description": "Always-On Control Island. Hosts Block 1 Buffer and Block 4 FSM"
+    },
+    "PD_MATH_CORE": {
+      "type": "switchable_processing_island_1.1V",
+      "elements": [
+        "u_fft_engine",
+        "u_energy_tracker"
+      ],
+      "description": "Switchable Mathematical Processing Island. Hosts Block 2 and 3"
+    }
+  },
+  "supply_ports": {
+    "VDD_AON": {
+      "voltage_baseline_v": 0.8,
+      "description": "Primary Baseline Input"
+    },
+    "VDD_MATH": {
+      "voltage_baseline_v": 1.1,
+      "description": "Heavy Execution Input"
+    },
+    "VSS": {
+      "voltage_baseline_v": 0.0,
+      "description": "Ground (0V Reference)"
+    }
+  },
+  "supply_nets_and_connections": {
+    "VDD_AON_NET": {
+      "domain": "PD_ALWAYS_ON",
+      "external_source_port": "VDD_AON"
+    },
+    "VDD_MATH_NET": {
+      "domain": "PD_MATH_CORE",
+      "external_source_port": "VDD_MATH"
+    },
+    "VSS_NET": {
+      "domain": "PD_TOP",
+      "external_source_port": "VSS"
+    }
+  },
+  "primary_supply_bindings": {
+    "PD_ALWAYS_ON": {
+      "power_net": "VDD_AON_NET",
+      "ground_net": "VSS_NET"
+    },
+    "PD_MATH_CORE": {
+      "power_net": "VDD_MATH_NET",
+      "ground_net": "VSS_NET"
+    }
+  },
+  "power_switches": {
+    "PS_MATH_GATE": {
+      "domain": "PD_MATH_CORE",
+      "input_supply_port": "VDD_MATH_NET",
+      "output_supply_port": "VDD_MATH_GATED_NET",
+      "control_port": "u_power_arbitrator/icg_gate_en_o",
+      "on_state": {
+        "state_name": "ON_STATE",
+        "condition": "!u_power_arbitrator/icg_gate_en_o",
+        "source": "VDD_MATH_NET"
+      },
+      "description": "Instantiates physical Power-Gating Transistor Switches (Sleep Transistors) inside the layout. Listens directly to the FSM 'icg_gate_en_o' control pin."
+    }
+  },
+  "boundary_voltage_crossings": {
+    "level_shifters": {
+      "LS_BUF_TO_FFT": {
+        "domain": "PD_MATH_CORE",
+        "source_domain": "PD_ALWAYS_ON",
+        "sink_domain": "PD_MATH_CORE",
+        "cell_location": "sink",
+        "description": "LEVEL SHIFTER: Since Block 1 outputs 0.8V signals, but Block 2 reads 1.1V signals, we must inject hardware Level Shifter cells to safely boost the voltage logic."
+      }
+    },
+    "isolation_cells": {
+      "ISO_MATH_TO_FSM": {
+        "domain": "PD_MATH_CORE",
+        "isolation_signal": "u_power_arbitrator/icg_gate_en_o",
+        "isolation_sense": "high",
+        "clamp_value": 0,
+        "description": "ISOLATION CELL: When the Math core is shut down, its output pins will float randomly. This clamp prevents floating signals from short-circuiting or confusing the 0.8V FSM."
+      }
+    }
+  }
+}

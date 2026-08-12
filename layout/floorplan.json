@@ -1,0 +1,75 @@
+{
+  "file_metadata": {
+    "file_name": "floorplan.json",
+    "design_target": "Physical Floorplanning & I/O Pad Ring Boundary Initialization"
+  },
+  "physical_dimensions_and_geometry": {
+    "design_name": "bci_top",
+    "die_footprint": {
+      "chip_width_microns": 500.0,
+      "chip_height_microns": 500.0,
+      "notes": "Strict low-power medical implant size footprint of 500μm x 500μm (0.5mm x 0.5mm ultra-compact die area)."
+    },
+    "core_margins_microns": {
+      "left": 20.0,
+      "right": 20.0,
+      "top": 20.0,
+      "bottom": 20.0,
+      "notes": "Defines space between internal transistor logic cell gate area and outer pad ring."
+    }
+  },
+  "core_utilization_calibration": {
+    "core_cell_utilization_density": 0.60,
+    "routing_congestion_buffer": 0.40,
+    "notes": "Target density factor of 0.60 (60% cell surface utilization). Allocates 40% empty space for routing congestion lines, multi-voltage domain isolation walls, and level-shifter cell tracks safely.",
+    "floorplan_derived_coordinates": {
+      "die_area_fixed": [0.0, 0.0, 500.0, 500.0],
+      "core_area_calculated": [20.0, 20.0, 480.0, 480.0]
+    }
+  },
+  "io_pad_ring_placement_matrix": {
+    "north_boundary": [
+      {
+        "pin": "clk",
+        "routing_layer": "metal3",
+        "placement_order": 1,
+        "description": "Primary System Clock track"
+      },
+      {
+        "pin": "rst_n",
+        "routing_layer": "metal3",
+        "placement_order": 2,
+        "description": "Asynchronous System Reset track"
+      }
+    ],
+    "west_boundary": [
+      {
+        "pin": "data_valid_i",
+        "routing_layer": "metal4",
+        "placement_order": 1,
+        "description": "Incoming Electrode ADC Data Valid tracking bit"
+      },
+      {
+        "pin": "data_in_i[*]",
+        "routing_layer": "metal4",
+        "placement_order": 2,
+        "description": "Incoming 16-bit Signed Biological Electrode Input Data Bus vector"
+      }
+    ],
+    "east_boundary": [
+      {
+        "pin": "hw_wake_o",
+        "routing_layer": "metal3",
+        "placement_order": 1,
+        "description": "Global Status Master Telemetry Power Rail Wake Output signal"
+      }
+    ]
+  },
+  "power_mesh_and_well_isolation": {
+    "voltage_ring_guard_bands": {
+      "target_domain": "PD_MATH_CORE",
+      "isolation_width_microns": 5.0,
+      "notes": "Generates explicit physical structural gaps and spacing barriers on the silicon die between the 0.8V Always-On domain and the 1.1V Switchable Math domain to prevent physical power leakage."
+    }
+  }
+}

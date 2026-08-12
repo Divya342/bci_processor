@@ -1,0 +1,61 @@
+{
+  "file_metadata": {
+    "file_name": "constraints.json",
+    "design_target": "15.7 MHz Ultra-Low-Power Neural Interface Processor"
+  },
+  "calibration_units": {
+    "time_unit": "nanoseconds",
+    "load_unit": "picofarad"
+  },
+  "core_system_clock_specification": {
+    "sys_clk": {
+      "target_frequency_mhz": 15.7,
+      "period_ns": 63.6942,
+      "source_port": "clk",
+      "derivation": "1 / 15.7 MHz = 63.6942 ns clock window period. Wires the clock definition straight to the master 'clk' input port pin.",
+      "clock_uncertainty_ns": 0.400,
+      "clock_uncertainty_notes": "Model real silicon clock jitter and oscillator noise. Allocates 400 picoseconds for random phase jitter and clock tree imbalances.",
+      "clock_transition_ns": 0.150,
+      "clock_transition_notes": "Model clock transition latency (Rise and Fall transition slope steepness)."
+    }
+  },
+  "input_arrays_port_boundaries": {
+    "ports": [
+      "data_valid_i",
+      "data_in_i"
+    ],
+    "clock_reference": "sys_clk",
+    "delays": {
+      "max_ns": 4.0,
+      "max_notes": "Assumes the external neural ADC chip takes up to 4ns to settle its output pins. This forces the synthesis compiler to keep internal setup routes under 59.694ns.",
+      "min_ns": 0.5,
+      "min_notes": "Set absolute minimum delay limits to safeguard against Hold-Time violations."
+    }
+  },
+  "output_bus_port_boundaries": {
+    "ports": [
+      "hw_wake_o"
+    ],
+    "clock_reference": "sys_clk",
+    "delays": {
+      "max_ns": 5.0,
+      "max_notes": "Demands that the 'hw_wake_o' power rail status line stabilizes at least 5.0ns before the next rising edge of the system clock hits external peripherals.",
+      "min_ns": 0.5
+    }
+  },
+  "environmental_silicon_physical_loads": {
+    "target_outputs": "all_outputs",
+    "set_load_pf": 0.050,
+    "set_load_notes": "Emulates standard load capacitances on external pins (TSMC 28nm standard library cell).",
+    "max_transition_ns": 1.500,
+    "max_transition_scope": "current_design",
+    "max_transition_notes": "Restricts maximum transition time on all internal routing nets to protect signal integrity and limit dynamic leakage currents caused by slow gate switching."
+  },
+  "timing_exceptions": {
+    "asynchronous_resets": {
+      "type": "false_path",
+      "from_port": "rst_n",
+      "notes": "Tells the timing solver that 'rst_n' is a completely independent manual asynchronous path, stopping the engine from wasting computational energy trying to optimize synchronous timing matrices on this pin."
+    }
+  }
+}
